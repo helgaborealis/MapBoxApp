@@ -2,16 +2,17 @@ package net.borlis.mapboxandroidapp.data
 
 import net.borlis.mapboxandroidapp.data.models.BuildingModel
 import net.borlis.mapboxandroidapp.domain.Result
-import net.borlis.mapboxandroidapp.network.ApiClient
 
-interface BuildingsRepository {
+interface BuildingsDataSource {
     suspend fun getBuildings(): Result<List<BuildingModel>>
 }
 
-class BuildingsRepositoryImpl(private val apiClient: ApiClient) :
-    BuildingsRepository {
+class BuildingsRepositoryImpl(
+    private val requestExecutor: RetrofitRequestExecutor
+) :
+    BuildingsDataSource {
     override suspend fun getBuildings(): Result<List<BuildingModel>> {
-        val result = apiClient.client.getBuildings()
-        return Result<re>
+        val result = requestExecutor.execute { api -> api.client.getBuildings() }
+        return result.convertSuccess { response -> response }
     }
 }

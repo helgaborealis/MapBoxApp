@@ -2,8 +2,12 @@ package net.borlis.mapboxandroidapp.di
 
 import android.app.Application
 import net.borlis.mapboxandroidapp.BuildingsMapViewModel
-import net.borlis.mapboxandroidapp.data.BuildingsRepository
+import net.borlis.mapboxandroidapp.DialogManager
+import net.borlis.mapboxandroidapp.GeneralErrorViewModel
+import net.borlis.mapboxandroidapp.data.BuildingsDataSource
 import net.borlis.mapboxandroidapp.data.BuildingsRepositoryImpl
+import net.borlis.mapboxandroidapp.domain.BuildingsRepository
+import net.borlis.mapboxandroidapp.domain.UnexpectedErrorRepository
 import net.borlis.mapboxandroidapp.network.ApiClient
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -13,14 +17,26 @@ val appModule = module {
 }
 
 val viewModelModule = module {
-    viewModel { BuildingsMapViewModel(get()) }
+    viewModel { BuildingsMapViewModel(get(), get()) }
+    viewModel { GeneralErrorViewModel(get()) }
 }
 
 val repositoryModule = module {
 
-    single<BuildingsRepository> { BuildingsRepositoryImpl(get()) }
+    single { UnexpectedErrorRepository() }
+
+    single { BuildingsRepository(get()) }
 
     single {
         ApiClient()
     }
 }
+
+val dataSourceModule = module {
+    single<BuildingsDataSource> { BuildingsRepositoryImpl(get()) }
+}
+
+val utilsModule = module {
+    single {
+        DialogManager()
+    }}

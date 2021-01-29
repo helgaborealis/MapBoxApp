@@ -1,9 +1,7 @@
 package net.borlis.mapboxandroidapp
 
 import android.app.Application
-import net.borlis.mapboxandroidapp.di.appModule
-import net.borlis.mapboxandroidapp.di.repositoryModule
-import net.borlis.mapboxandroidapp.di.viewModelModule
+import net.borlis.mapboxandroidapp.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -15,11 +13,10 @@ class MapApplication : Application() {
 
         val koinModules: List<Module> = listOf(
             appModule,
-//            fragmentModule,
             viewModelModule,
             repositoryModule,
-//            dataSourceModule,
-//            utilsModule
+            dataSourceModule,
+            utilsModule
         )
 
         startKoin {
