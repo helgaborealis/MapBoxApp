@@ -32,7 +32,7 @@ class ApiClient {
     }
 
     companion object {
-        private const val BASE_URL: String = "https://drive.google.com/file/"
+        private const val BASE_URL: String = "https://drive.google.com/"
         private const val TIMEOUT_MINUTE: Long = 1
         private val logLevel = HttpLoggingInterceptor.Level.BODY
     }

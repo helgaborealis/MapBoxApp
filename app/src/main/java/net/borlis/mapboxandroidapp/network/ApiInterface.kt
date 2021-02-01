@@ -5,6 +5,6 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface ApiInterface {
-    @GET("file/d/1Q74IPl1PyhbPu2RWXMWmauZ6g_QtUzO1/view")
+    @GET("uc?export=view&id=1Q74IPl1PyhbPu2RWXMWmauZ6g_QtUzO1")
     suspend fun getBuildings(): Response<List<BuildingModel>>
 }

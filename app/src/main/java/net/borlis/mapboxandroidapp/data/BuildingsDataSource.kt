@@ -7,7 +7,7 @@ interface BuildingsDataSource {
     suspend fun getBuildings(): Result<List<BuildingModel>>
 }
 
-class BuildingsRepositoryImpl(
+class BuildingsDataSourceImpl(
     private val requestExecutor: RetrofitRequestExecutor
 ) :
     BuildingsDataSource {

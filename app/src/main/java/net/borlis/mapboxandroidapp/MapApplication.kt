@@ -1,6 +1,7 @@
 package net.borlis.mapboxandroidapp
 
 import android.app.Application
+import com.facebook.stetho.Stetho
 import net.borlis.mapboxandroidapp.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -24,5 +25,7 @@ class MapApplication : Application() {
             androidContext(this@MapApplication)
             modules(koinModules)
         }
+
+        Stetho.initializeWithDefaults(this)
     }
 }

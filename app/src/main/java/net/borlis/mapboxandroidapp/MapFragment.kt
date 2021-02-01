@@ -1,17 +1,36 @@
 package net.borlis.mapboxandroidapp
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.mapbox.mapboxsdk.maps.*
+import androidx.fragment.app.Fragment
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.geojson.Point
+import com.mapbox.mapboxsdk.camera.CameraPosition
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLngBounds
+import com.mapbox.mapboxsdk.maps.MapboxMap
+import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.maps.Style.OnStyleLoaded
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import kotlinx.android.synthetic.main.fragment_map.*
 import net.borlis.mapboxandroidapp.extensions.observeNonNull
 import net.borlis.mapboxandroidapp.extensions.setVisibility
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class MapFragment : Fragment() {
+
+    private val SOURCE_ID: String = "SOURCE_ID"
+    private val ICON_ID = "ICON_ID"
+    private val LAYER_ID = "LAYER_ID"
 
     private val viewModel: BuildingsMapViewModel by viewModel()
 
@@ -27,22 +46,115 @@ class MapFragment : Fragment() {
         viewModel.inProgress.observeNonNull(viewLifecycleOwner) { isInProgress ->
             loading.setVisibility(isInProgress)
         }
-        viewModel.buildingsPointers.observeNonNull(viewLifecycleOwner) {
-            // TODO: 30.01.2021  display pointers here
+        viewModel.buildingsPointers.observeNonNull(viewLifecycleOwner) { list ->
+            addPointersToTheMap(list)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mapView.getMapAsync { mapBoxMap ->
-            mapBoxMap.setStyle(Style.SATELLITE) {
-                // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-            }
-        }
         viewModel.getBuildings()
     }
 
-    private fun openDetailView() {
-        // TODO: 30.01.2021
+    private fun addPointersToTheMap(list: List<Feature>) {
+        mapView.getMapAsync { mapBoxMap ->
+            mapBoxMap.setStyle(
+                Style.Builder()
+                    .fromUri("mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41")
+                    .withImage(
+                        ICON_ID, BitmapFactory.decodeResource(
+                            this.resources,
+                            R.drawable.mapbox_marker_icon_default
+                        )
+                    )
+                    .withSource(
+                        GeoJsonSource(
+                            SOURCE_ID,
+                            FeatureCollection.fromFeatures(list)
+                        )
+                    )
+                    .withLayer(
+                        SymbolLayer(LAYER_ID, SOURCE_ID)
+                            .withProperties(
+                                iconImage(ICON_ID),
+                                iconAllowOverlap(true),
+                                iconIgnorePlacement(true)
+                            )
+                    ), OnStyleLoaded {
+
+                })
+            // FIXME: 01.02.2021  should be rewritten to fit all the pointers
+            val position = CameraPosition.Builder()
+                .target(
+                    LatLng(
+                        (list.first().geometry() as Point).latitude(),
+                        (list.first().geometry() as Point).longitude()
+                    )
+                )
+                .zoom(10.0)
+                .tilt(20.0)
+                .build()
+
+            mapBoxMap.animateCamera(
+                CameraUpdateFactory.newCameraPosition(
+                    position
+                )
+            )
+
+            mapBoxMap.addOnMapClickListener {
+                val pixel = mapBoxMap.projection.toScreenLocation(it)
+                val features = mapBoxMap.queryRenderedFeatures(pixel)
+                if (features.size > 0) {
+                    val feature = features[0]
+                    openDetailView(feature.properties()?.get("id").toString())
+                }
+                true
+            }
+        }
+    }
+
+
+    private fun openDetailView(id: String) {
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView.onStart()
+    }
+
+    override fun onStop() {
+        mapView.onStop()
+        super.onStop()
+    }
+
+    override fun onPause() {
+        mapView.onPause()
+        super.onPause()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
+    }
+
+    override fun onDestroy() {
+        mapView.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        mapView.onSaveInstanceState(outState)
+    }
+
+
+    companion object {
+        private const val TAG = "MapFragment"
     }
 }

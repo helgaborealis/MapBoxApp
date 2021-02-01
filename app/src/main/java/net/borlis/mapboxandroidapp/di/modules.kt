@@ -5,7 +5,9 @@ import net.borlis.mapboxandroidapp.BuildingsMapViewModel
 import net.borlis.mapboxandroidapp.DialogManager
 import net.borlis.mapboxandroidapp.GeneralErrorViewModel
 import net.borlis.mapboxandroidapp.data.BuildingsDataSource
-import net.borlis.mapboxandroidapp.data.BuildingsRepositoryImpl
+import net.borlis.mapboxandroidapp.data.BuildingsDataSourceImpl
+import net.borlis.mapboxandroidapp.data.RetrofitRequestExecutor
+import net.borlis.mapboxandroidapp.data.RetrofitRequestExecutorImpl
 import net.borlis.mapboxandroidapp.domain.BuildingsRepository
 import net.borlis.mapboxandroidapp.domain.UnexpectedErrorRepository
 import net.borlis.mapboxandroidapp.network.ApiClient
@@ -33,10 +35,13 @@ val repositoryModule = module {
 }
 
 val dataSourceModule = module {
-    single<BuildingsDataSource> { BuildingsRepositoryImpl(get()) }
+    single<BuildingsDataSource> { BuildingsDataSourceImpl(get()) }
+
+    single<RetrofitRequestExecutor> { RetrofitRequestExecutorImpl(get()) }
 }
 
 val utilsModule = module {
     single {
         DialogManager()
-    }}
+    }
+}
