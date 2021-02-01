@@ -9,9 +9,10 @@ fun mapToFeatures(list: List<BuildingModel>): List<Feature> {
     val result = mutableListOf<Feature>()
     list.forEach {
         val properties = JsonObject()
-        properties.addProperty("id", it.id)
-        properties.addProperty("address", it.address)
-        properties.addProperty("title", it.title)
+        properties.addProperty(ID, it.id)
+        properties.addProperty(ADDRESS, it.address)
+        properties.addProperty(TITLE, it.title)
+        properties.addProperty(IMAGE_URL, it.mainImage)
         result.add(
             Feature.fromGeometry(
                 Point.fromLngLat(it.longitude, it.latitude),
@@ -21,3 +22,8 @@ fun mapToFeatures(list: List<BuildingModel>): List<Feature> {
     }
     return result
 }
+
+const val ID = "id"
+const val ADDRESS = "address"
+const val TITLE = "title"
+const val IMAGE_URL = "image url"

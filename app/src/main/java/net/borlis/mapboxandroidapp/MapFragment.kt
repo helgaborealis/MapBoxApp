@@ -2,7 +2,6 @@ package net.borlis.mapboxandroidapp
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +12,12 @@ import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.geometry.LatLngBounds
-import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.maps.Style.OnStyleLoaded
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import kotlinx.android.synthetic.main.details_dialog.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import net.borlis.mapboxandroidapp.extensions.observeNonNull
 import net.borlis.mapboxandroidapp.extensions.setVisibility
@@ -106,7 +104,7 @@ class MapFragment : Fragment() {
                 val features = mapBoxMap.queryRenderedFeatures(pixel)
                 if (features.size > 0) {
                     val feature = features[0]
-                    openDetailView(feature.properties()?.get("id").toString())
+                    openDetailView(feature)
                 }
                 true
             }
@@ -114,8 +112,10 @@ class MapFragment : Fragment() {
     }
 
 
-    private fun openDetailView(id: String) {
-
+    private fun openDetailView(feature: Feature) {
+        activity?.let {
+            BuildingDetailsDialog(it, feature).show()
+        }
     }
 
     override fun onResume() {
