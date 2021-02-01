@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
@@ -17,7 +18,6 @@ import com.mapbox.mapboxsdk.maps.Style.OnStyleLoaded
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
-import kotlinx.android.synthetic.main.details_dialog.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import net.borlis.mapboxandroidapp.extensions.observeNonNull
 import net.borlis.mapboxandroidapp.extensions.setVisibility
@@ -47,11 +47,31 @@ class MapFragment : Fragment() {
         viewModel.buildingsPointers.observeNonNull(viewLifecycleOwner) { list ->
             addPointersToTheMap(list)
         }
+        viewModel.filterPointers.observeNonNull(viewLifecycleOwner) { list ->
+            addPointersToTheMap(list)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    filterPointers(it)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return true
+            }
+
+        })
         viewModel.getBuildings()
+    }
+
+    private fun filterPointers(query: String) {
+        viewModel.filterPointers(query)
     }
 
     private fun addPointersToTheMap(list: List<Feature>) {
@@ -117,42 +137,6 @@ class MapFragment : Fragment() {
             BuildingDetailsDialog(it, feature).show()
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        mapView.onResume()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mapView.onStart()
-    }
-
-    override fun onStop() {
-        mapView.onStop()
-        super.onStop()
-    }
-
-    override fun onPause() {
-        mapView.onPause()
-        super.onPause()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        mapView.onLowMemory()
-    }
-
-    override fun onDestroy() {
-        mapView.onDestroy()
-        super.onDestroy()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        mapView.onSaveInstanceState(outState)
-    }
-
 
     companion object {
         private const val TAG = "MapFragment"

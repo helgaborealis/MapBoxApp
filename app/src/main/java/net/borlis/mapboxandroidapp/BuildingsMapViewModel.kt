@@ -5,11 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapbox.geojson.Feature
 import net.borlis.mapboxandroidapp.data.models.BuildingModel
-import net.borlis.mapboxandroidapp.domain.BuildingsRepository
-import net.borlis.mapboxandroidapp.domain.UnexpectedErrorRepository
+import net.borlis.mapboxandroidapp.domain.*
 import net.borlis.mapboxandroidapp.extensions.launchIO
-import net.borlis.mapboxandroidapp.domain.Result
-import net.borlis.mapboxandroidapp.domain.mapToFeatures
 
 class BuildingsMapViewModel(
     private val buildingsRepository: BuildingsRepository,
@@ -17,9 +14,12 @@ class BuildingsMapViewModel(
 ) : ViewModel() {
     private val _inProgress: MutableLiveData<Boolean> = MutableLiveData(false)
     val inProgress: LiveData<Boolean> = _inProgress
-    private val _buildingsPointers: MutableLiveData<List<Feature>> =
+    private var _buildingsPointers: MutableLiveData<List<Feature>> =
         MutableLiveData<List<Feature>>()
     val buildingsPointers: LiveData<List<Feature>> = _buildingsPointers
+    private var _filterPointers: MutableLiveData<List<Feature>> =
+        MutableLiveData<List<Feature>>()
+    val filterPointers = _filterPointers
 
     fun getBuildings() {
         _inProgress.value = true
@@ -32,5 +32,16 @@ class BuildingsMapViewModel(
                 is Result.Error -> unexpectedErrorRepository.registerUnexpectedError(result.exception)
             }
         }
+    }
+
+    fun filterPointers(query: String) {
+        if (query.isNotEmpty()) {
+            _filterPointers.postValue(buildingsPointers.value?.filter {
+                it.getStringProperty(TITLE).contains(query)
+            })
+        } else {
+            _filterPointers.postValue(buildingsPointers.value)
+        }
+
     }
 }
