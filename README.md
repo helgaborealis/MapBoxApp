@@ -11,6 +11,7 @@ Didn't write tests
 Didn't generalise gradle build files 
 
 
-#Add secret toke
+#Add secret token
+
  To launch add secret toke to local.properties file
  MAPBOX_DOWNLOADS_TOKEN = "YOUR_TOKEN"
