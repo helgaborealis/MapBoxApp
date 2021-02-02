@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mapbox.geojson.Feature
-import net.borlis.mapboxandroidapp.data.models.BuildingModel
 import net.borlis.mapboxandroidapp.domain.*
 import net.borlis.mapboxandroidapp.extensions.launchIO
 
@@ -36,12 +35,19 @@ class BuildingsMapViewModel(
 
     fun filterPointers(query: String) {
         if (query.isNotEmpty()) {
-            _filterPointers.postValue(buildingsPointers.value?.filter {
-                it.getStringProperty(TITLE).contains(query)
-            })
+            val result = buildingsPointers.value?.filter {
+                it.getStringProperty(TITLE).contains(query, ignoreCase = true)   // fixme
+            }
+            if (!result.isNullOrEmpty()) {
+                _filterPointers.postValue(result)
+            }
         } else {
-            _filterPointers.postValue(buildingsPointers.value)
+            clearFilter()
         }
 
+    }
+
+    fun clearFilter() {
+        _buildingsPointers.postValue(buildingsPointers.value)
     }
 }

@@ -3,7 +3,7 @@ package net.borlis.mapboxandroidapp.domain
 import com.google.gson.JsonObject
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.Point
-import net.borlis.mapboxandroidapp.data.models.BuildingModel
+import net.borlis.mapboxandroidapp.network.data.models.BuildingModel
 
 fun mapToFeatures(list: List<BuildingModel>): List<Feature> {
     val result = mutableListOf<Feature>()

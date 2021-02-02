@@ -1,4 +1,4 @@
-package net.borlis.mapboxandroidapp.data
+package net.borlis.mapboxandroidapp.network.data
 
 class SingleHandleEvent<out T>(private val content: T?) {
 

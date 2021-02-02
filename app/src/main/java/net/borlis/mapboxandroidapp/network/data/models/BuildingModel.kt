@@ -1,4 +1,4 @@
-package net.borlis.mapboxandroidapp.data.models
+package net.borlis.mapboxandroidapp.network.data.models
 
 data class BuildingModel(
     val id: Int,

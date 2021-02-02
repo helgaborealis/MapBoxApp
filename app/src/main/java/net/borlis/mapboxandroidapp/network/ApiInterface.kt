@@ -1,6 +1,6 @@
 package net.borlis.mapboxandroidapp.network
 
-import net.borlis.mapboxandroidapp.data.models.BuildingModel
+import net.borlis.mapboxandroidapp.network.data.models.BuildingModel
 import retrofit2.Response
 import retrofit2.http.GET
 

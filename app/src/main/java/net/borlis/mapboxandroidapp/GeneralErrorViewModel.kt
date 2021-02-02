@@ -7,7 +7,7 @@ import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import net.borlis.mapboxandroidapp.domain.UnexpectedErrorRepository
-import net.borlis.mapboxandroidapp.data.SingleHandleEvent
+import net.borlis.mapboxandroidapp.network.data.SingleHandleEvent
 
 class GeneralErrorViewModel(errorRepository: UnexpectedErrorRepository) : ViewModel() {
     val generalErrorEvents: LiveData<SingleHandleEvent<Unit>> = errorRepository.errors

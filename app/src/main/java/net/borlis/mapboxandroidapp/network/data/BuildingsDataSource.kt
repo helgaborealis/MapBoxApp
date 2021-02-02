@@ -1,6 +1,6 @@
 package net.borlis.mapboxandroidapp.data
 
-import net.borlis.mapboxandroidapp.data.models.BuildingModel
+import net.borlis.mapboxandroidapp.network.data.models.BuildingModel
 import net.borlis.mapboxandroidapp.domain.Result
 
 interface BuildingsDataSource {

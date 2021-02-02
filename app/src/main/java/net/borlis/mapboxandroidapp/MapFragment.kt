@@ -57,13 +57,16 @@ class MapFragment : Fragment() {
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-                    filterPointers(it)
+                    filterPointers(query)
                 }
-                return true
+                return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                return true
+                if (search.query.isEmpty()) {
+                    viewModel.clearFilter()
+                }
+                return false
             }
 
         })
